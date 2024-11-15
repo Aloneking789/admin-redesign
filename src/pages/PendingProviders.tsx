@@ -5,8 +5,8 @@ import {
   Bell, Flag, Trash2, Edit3, ExternalLink 
 } from 'lucide-react';
 import { Card, AreaChart, Title, DonutChart } from '@tremor/react';
-
-
+import AddProviderForm from '../components/AddProvider';
+import { auth } from './auth';
 interface Service {
     id: string;
     provider_id: string;
@@ -23,11 +23,10 @@ interface provider {
   services: Service[];
 
 }
-const auth = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjczNjI0ZWFhMGM5YWYxMTBkMWI1MjljIiwiZW1haWwiOiJpdHNwcmFza3BhdGVsQGdtYWlsLmNvbSIsImlhdCI6MTczMTY4MDcwNCwiZXhwIjoxNzMxNjg0MzA0fQ.FOuplmj-ZdzsnYZglLf56w9yhWqWM693DxXXE7ePTdI"
 const PendingServiceProviders = () => {
   const [selectedProvider, setSelectedProvider] = useState<provider | null>(null);
-  const [view, setView] = useState<'list' | 'profile'>('list');
-  
+  const [view, setView] = useState<'list' | 'profile' | 'addProvider'>('list');
+
   const [pendingProviders,setPendingProviders] = useState([]);
     useEffect(() => {
         const fetch = async ()=>{
@@ -67,7 +66,9 @@ const PendingServiceProviders = () => {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold">Service Providers</h2>
           <div className="flex space-x-3">
-            <button className="btn-primary">Add Provider</button>
+            <button className="btn-primary" onClick={()=>{
+              setView("addProvider")
+            }}>Add Provider</button>
             <button className="btn-secondary flex items-center">
               <Bell className="w-4 h-4 mr-2" />
               Send Notification
@@ -329,10 +330,20 @@ const PendingServiceProviders = () => {
       </div>
     );
   };
+  
 
   return (
     <div className="p-6">
-      {view === 'list' ? <ProviderList /> : <ProviderProfile />}
+      {/* Use a ternary operator for conditional rendering */}
+      {view === 'list' ? (
+        <ProviderList />
+      ) : view === 'profile' ? (
+        <ProviderProfile />
+      ) : view === 'addProvider' ? (
+        < AddProviderForm /> 
+      ) : (
+        <div>No view selected</div>
+      )}
     </div>
   );
 };

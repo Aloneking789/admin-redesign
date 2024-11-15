@@ -5,7 +5,7 @@ import {
   Bell, Flag, Trash2, Edit3, ExternalLink 
 } from 'lucide-react';
 import { Card, AreaChart, Title, DonutChart } from '@tremor/react';
-
+import { auth } from './auth';
 interface Provider {
   id: string;
   name: string;
@@ -18,7 +18,6 @@ interface Provider {
   completedJobs: number;
   verificationDocuments: string[];
 }
-const auth = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjczNjI0ZWFhMGM5YWYxMTBkMWI1MjljIiwiZW1haWwiOiJpdHNwcmFza3BhdGVsQGdtYWlsLmNvbSIsImlhdCI6MTczMTY4MDcwNCwiZXhwIjoxNzMxNjg0MzA0fQ.FOuplmj-ZdzsnYZglLf56w9yhWqWM693DxXXE7ePTdI"
 
 const ServiceProviders = () => {
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
