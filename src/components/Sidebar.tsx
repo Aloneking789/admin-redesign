@@ -17,6 +17,7 @@ const Sidebar = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
     { icon: Users, label: 'User Management', path: '/users' },
+    { icon: Store, label: 'Pending Service Providers', path: '/pendingproviders' },
     { icon: Store, label: 'Service Providers', path: '/providers' },
     { icon: FolderTree, label: 'Categories', path: '/categories' },
     { icon: UserCog, label: 'Staff Management', path: '/staff' },

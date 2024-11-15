@@ -1,50 +1,53 @@
-import React, { useState ,useEffect} from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 import { 
   Search, Filter, MoreVertical, CheckCircle, XCircle, 
   Bell, Flag, Trash2, Edit3, ExternalLink 
 } from 'lucide-react';
 import { Card, AreaChart, Title, DonutChart } from '@tremor/react';
 
-interface Provider {
+
+interface Service {
+    id: string;
+    provider_id: string;
+    service_id: string;
+  }
+
+  
+interface provider {
   id: string;
-  name: string;
   email: string;
-  active : boolean
-  status: 'verified' | 'pending' | 'rejected';
-  services: string[];
-  rating: number;
-  joinedDate: string;
-  completedJobs: number;
-  verificationDocuments: string[];
+  password :string
+  fullname: string;
+  phone : string;
+  services: Service[];
+
 }
 const auth = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiNjczNjI0ZWFhMGM5YWYxMTBkMWI1MjljIiwiZW1haWwiOiJpdHNwcmFza3BhdGVsQGdtYWlsLmNvbSIsImlhdCI6MTczMTY4MDcwNCwiZXhwIjoxNzMxNjg0MzA0fQ.FOuplmj-ZdzsnYZglLf56w9yhWqWM693DxXXE7ePTdI"
-
-const ServiceProviders = () => {
-  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
+const PendingServiceProviders = () => {
+  const [selectedProvider, setSelectedProvider] = useState<provider | null>(null);
   const [view, setView] = useState<'list' | 'profile'>('list');
   
-  const [providers,setProviders] = useState([]);
+  const [pendingProviders,setPendingProviders] = useState([]);
     useEffect(() => {
         const fetch = async ()=>{
             try {
-                const response = await axios.get("https://backend-82hj.onrender.com/api/v1/admin/providers/?page=1&pageSize=10",
+                const response = await axios.get("https://backend-82hj.onrender.com/api/v1/admin/pendingproviders/?page=1&pageSize=10",
                     {
                         headers : {
                             Authorization: auth
                         }   
                     }
                 )
-                setProviders(response.data)
+                setPendingProviders(response.data)
                 console.log(response.data)
             } catch (error) {
                 console.log(error)
             }
         }
         fetch()
-        console.log("hii" +providers)
+        console.log("hii" + pendingProviders)
     },[])
-
 
   const performanceData = [
     { date: '2024-01', completed: 25, cancelled: 2 },
@@ -121,7 +124,7 @@ const ServiceProviders = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {providers.map((provider:any) => (
+            {pendingProviders.map((provider:provider) => (
               <tr key={provider.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4">
                   <div className="flex items-center">
@@ -137,29 +140,31 @@ const ServiceProviders = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors.verified}`}>
-                    {""+provider.active}
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors.pending}`}>
+                    Pending
                   </span>
+                  
+                  
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-wrap gap-1">
                     {provider.services.map((service:any) => (
-                      <span key={service.id} className="px-2 py-1 text-xs bg-gray-100 rounded-full">
-                        {/* {service.service.service_name} */}
+                      <span key={service.provider_id} className="px-2 py-1 text-xs bg-gray-100 rounded-full">
+                        {service.service.service_name}
                       </span>
                     ))}
                   </div>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center">
-                    <span className="text-sm font-medium">{provider.rating}</span>
+                    <span className="text-sm font-medium">{5}</span>
                     <div className="ml-2 flex text-yellow-400">
-                      {'★'.repeat(Math.floor(3+Math.random()*2))}
+                      {'★'.repeat(Math.floor(5))}
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
-                  {new Date(provider.dateApproved).toLocaleDateString()}
+                  {new Date("2024-11-15T10:33:33.759+00:00").toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center space-x-3">
@@ -168,14 +173,13 @@ const ServiceProviders = () => {
                         setSelectedProvider(provider);
                         setView('profile');
                       }}
-                      className="text-[#00C8C8] hover:text-[#00B4B4]"
-                    >
+                      className="text-[#00C8C8] hover:text-[#00B4B4]">
                       <ExternalLink className="w-4 h-4" />
                     </button>
                     <button className="text-blue-600 hover:text-blue-800">
                       <Edit3 className="w-4 h-4" />
                     </button>
-                    <button className="text-red-600 hover:text-red-800">
+                    <button className="text-red-600 hover:text-red-800" onClick={()=>{alert("delete")}}>
                       <Trash2 className="w-4 h-4" />
                     </button>
                     <button className="text-gray-400 hover:text-gray-600">
@@ -192,7 +196,7 @@ const ServiceProviders = () => {
       <div className="px-6 py-4 border-t border-gray-200">
         <div className="flex items-center justify-between">
           <div className="text-sm text-gray-500">
-            Showing 1 to 20 of 100 entries
+            Showing 1 to 10 of 100 entries
           </div>
           <div className="flex items-center space-x-2">
             <button className="px-3 py-1 border rounded-md hover:bg-gray-50">Previous</button>
@@ -223,7 +227,30 @@ const ServiceProviders = () => {
               <Flag className="w-4 h-4 mr-2" />
               Flag Provider
             </button>
-            <button className="btn-primary flex items-center">
+            <button className="btn-primary flex items-center " 
+            onClick={ async ()=>{
+              try {
+                const verifyProvider = async ()=>{
+                  console.log("Verifyyyinggggg")
+                  console.log(selectedProvider)
+                  console.log(selectedProvider.id)
+                  const response = await axios.post(`https://backend-82hj.onrender.com/api/v1/admin/verifyprovider/?providerId=${selectedProvider.id}`,
+                    null,{
+                      headers : {
+                        Authorization : auth
+                      }
+                    }
+                  )
+                  console.log(response.data)
+                  alert(response.data.message)
+                }
+                
+                verifyProvider()
+                
+              } catch (error) {
+                console.log(error)
+              }
+            }}> 
               <CheckCircle className="w-4 h-4 mr-2" />
               Verify Provider
             </button>
@@ -235,25 +262,25 @@ const ServiceProviders = () => {
             <Card>
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold">{selectedProvider.name}</h2>
+                  <h2 className="text-xl font-semibold">{selectedProvider.fullname}</h2>
                   <p className="text-gray-500">{selectedProvider.email}</p>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[selectedProvider.status]}`}>
-                  {selectedProvider.status}
+                <span className="px-3 py-1 rounded-full text-sm font-medium">
+                  active
                 </span>
               </div>
               
               <div className="mt-6 grid grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{selectedProvider.rating}</div>
+                  {/* <div className="text-2xl font-bold">{selectedProvider.rating}</div> */}
                   <div className="text-sm text-gray-500">Rating</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{selectedProvider.completedJobs}</div>
+                  {/* <div className="text-2xl font-bold">{selectedProvider.completedJobs}</div> */}
                   <div className="text-sm text-gray-500">Completed Jobs</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{selectedProvider.services.length}</div>
+                  {/* <div className="text-2xl font-bold">{selectedProvider.services.length}</div> */}
                   <div className="text-sm text-gray-500">Services</div>
                 </div>
               </div>
@@ -288,14 +315,14 @@ const ServiceProviders = () => {
 
             <Card>
               <Title>Verification Documents</Title>
-              <div className="mt-4 space-y-3">
+              {/* <div className="mt-4 space-y-3">
                 {selectedProvider.verificationDocuments.map((doc) => (
                   <div key={doc} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span className="text-sm">{doc}</span>
                     <button className="text-[#00C8C8]">View</button>
                   </div>
                 ))}
-              </div>
+              </div> */}
             </Card>
           </div>
         </div>
@@ -310,4 +337,4 @@ const ServiceProviders = () => {
   );
 };
 
-export default ServiceProviders;
+export default PendingServiceProviders;
